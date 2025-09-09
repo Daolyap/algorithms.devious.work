@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Algorithm Visualizer Pro</title>
   <style>
     :root {
-      --bg-dark: #0f0f0f;
+      --bg-dark: #0a0a0a;
       --bg-medium: #1a1a1a;
       --bg-light: #2a2a2a;
-      --bg-canvas: #121212;
+      --bg-canvas: #0f0f0f;
       --text-primary: #ffffff;
       --text-secondary: #b0b0b0;
       --border-color: #333;
-      --accent-yellow: #ffd700;
-      --accent-green: #00ff7f;
-      --accent-red: #ff4757;
-      --accent-blue: #70a1ff;
-      --accent-purple: #a55eea;
-      --accent-orange: #ff6348;
-      --glow-color: #00ffff;
+      --accent-blue: #4FC3F7;
+      --accent-purple: #9C27B0;
+      --accent-green: #4CAF50;
+      --accent-orange: #FF9800;
+      --accent-red: #F44336;
+      --accent-yellow: #FFC107;
+      --glow: rgba(79, 195, 247, 0.3);
     }
 
     * {
@@ -28,7 +28,7 @@
 
     body {
       margin: 0;
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
       color: var(--text-primary);
       display: flex;
@@ -41,7 +41,7 @@
       background: linear-gradient(135deg, var(--bg-medium) 0%, #16213e 100%);
       padding: 1.5rem;
       border-bottom: 2px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+      box-shadow: 0 4px 20px var(--glow);
     }
 
     h1 {
@@ -53,14 +53,14 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 30px rgba(112, 161, 255, 0.5);
+      filter: drop-shadow(0 0 10px var(--glow));
     }
 
     #controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
-      align-items: center;
+      align-items: end;
     }
 
     .control-group {
@@ -81,27 +81,26 @@
       padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
-      background: linear-gradient(135deg, var(--bg-light) 0%, #2a2a3e 100%);
+      background: var(--bg-light);
       color: var(--text-primary);
       font-size: 1em;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     select:focus, input:focus, button:focus {
       outline: none;
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(112, 161, 255, 0.2);
+      box-shadow: 0 0 0 2px var(--glow);
     }
 
     button {
-      cursor: pointer;
       font-weight: 600;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border: none;
     }
 
     button:hover {
-      background: linear-gradient(135deg, #3a3a4e 0%, #4a4a6e 100%);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
@@ -110,16 +109,12 @@
       transform: translateY(0);
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-    }
-
     .btn-success {
-      background: linear-gradient(135deg, var(--accent-green) 0%, #00d2d3 100%);
+      background: linear-gradient(135deg, var(--accent-green), #66BB6A);
     }
 
     .btn-warning {
-      background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-orange) 100%);
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
     }
 
     main {
@@ -137,28 +132,11 @@
 
     .canvas-container {
       position: relative;
-      background: linear-gradient(135deg, var(--bg-canvas) 0%, #1a1a2e 100%);
+      background: var(--bg-canvas);
       border: 2px solid var(--border-color);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .canvas-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .canvas-container:hover::before {
-      opacity: 1;
     }
 
     canvas {
@@ -185,6 +163,7 @@
       font-size: 0.85em;
       min-width: 150px;
       backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .stats-panel div {
@@ -201,15 +180,7 @@
       font-size: 0.8em;
       font-weight: 600;
       backdrop-filter: blur(10px);
-    }
-
-    footer {
-      background: linear-gradient(135deg, var(--bg-medium) 0%, #16213e 100%);
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9em;
-      border-top: 2px solid var(--border-color);
-      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Range slider styling */
@@ -232,22 +203,7 @@
       border-radius: 50%;
       background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(112, 161, 255, 0.5);
-    }
-
-    /* Loading animation */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: var(--accent-blue);
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      box-shadow: 0 0 10px var(--glow);
     }
 
     /* Responsive design */
@@ -265,6 +221,13 @@
         grid-template-rows: 1fr 1fr;
       }
     }
+
+    /* Animation classes */
+    .highlight-red { background-color: #ff6b6b !important; }
+    .highlight-blue { background-color: #4ecdc4 !important; }
+    .highlight-green { background-color: #45b7d1 !important; }
+    .highlight-yellow { background-color: #feca57 !important; }
+    .highlight-purple { background-color: #ff9ff3 !important; }
   </style>
 </head>
 <body>
@@ -273,7 +236,11 @@
     <div id="controls">
       <div class="control-group">
         <label>Category</label>
-        <select id="categorySelect"></select>
+        <select id="categorySelect">
+          <option value="sorting">Sorting</option>
+          <option value="searching">Searching</option>
+          <option value="pathfinding">Pathfinding</option>
+        </select>
       </div>
       
       <div class="control-group">
@@ -282,16 +249,16 @@
       </div>
       
       <div class="control-group">
-        <label>Speed</label>
-        <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1" />
+        <label>Speed: <span id="speedValue">1x</span></label>
+        <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
       </div>
       
       <div class="control-group">
-        <label>Size</label>
-        <input type="range" id="sizeSlider" min="10" max="500" step="10" value="100" />
+        <label>Size: <span id="sizeValue">100</span></label>
+        <input type="range" id="sizeSlider" min="10" max="300" step="10" value="100">
       </div>
       
-      <button id="playPauseBtn" class="btn-primary">▶ Play</button>
+      <button id="playPauseBtn">▶ Play</button>
       <button id="resetBtn" class="btn-success">🔄 Reset</button>
       <button id="battleModeBtn" class="btn-warning">⚔ Battle Mode</button>
     </div>
@@ -310,55 +277,8 @@
     </div>
   </main>
 
-  <footer>
-    <p>Algorithm Visualizer Pro - Experience algorithms like never before</p>
-  </footer>
-
   <script>
-    /*
-      Enhanced Algorithm Visualizer with extensive algorithms and features
-    */
-
-    // ========================= Audio Engine =========================
-    class AudioEngine {
-      constructor() {
-        try {
-          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-          this.masterGain = this.ctx.createGain();
-          this.masterGain.gain.value = 0.15;
-          this.masterGain.connect(this.ctx.destination);
-        } catch (e) {
-          console.warn("Web Audio API not supported");
-          this.ctx = null;
-        }
-      }
-
-      _createTone(type, freq, duration, attack = 0.01, decay = 0.1) {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        
-        gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.3, this.ctx.currentTime + attack);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-        
-        osc.connect(gain);
-        gain.connect(this.masterGain);
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-      }
-
-      compare() { this._createTone('triangle', 800, 0.05); }
-      swap() { this._createTone('square', 400, 0.08); }
-      access() { this._createTone('sine', 600, 0.04); }
-      finish() { this._createTone('sawtooth', 300, 0.3, 0.02, 0.25); }
-      error() { this._createTone('sawtooth', 150, 0.15); }
-    }
-
-    // ========================= Utilities =========================
+    // Seeded Random Number Generator
     class SeededRNG {
       constructor(seed) {
         this.seed = seed;
@@ -371,91 +291,142 @@
       }
       
       random() { return this.next(); }
-      range(min, max) { return min + this.random() * (max - min); }
-      int(min, max) { return Math.floor(this.range(min, max + 1)); }
+      int(min, max) { return Math.floor(min + this.random() * (max - min + 1)); }
     }
 
-    // ========================= Base Algorithm Class =========================
+    // Audio Engine for sound feedback
+    class AudioEngine {
+      constructor() {
+        this.enabled = true;
+        try {
+          this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          this.masterGain = this.audioContext.createGain();
+          this.masterGain.gain.value = 0.1;
+          this.masterGain.connect(this.audioContext.destination);
+        } catch (e) {
+          this.enabled = false;
+        }
+      }
+
+      playTone(frequency, duration = 0.1, type = 'sine') {
+        if (!this.enabled) return;
+        
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.masterGain);
+        
+        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + duration);
+      }
+
+      compare() { this.playTone(800, 0.05); }
+      swap() { this.playTone(400, 0.1, 'square'); }
+      access() { this.playTone(600, 0.05); }
+      complete() { this.playTone(300, 0.3, 'sawtooth'); }
+    }
+
+    // Base Algorithm Class
     class Algorithm {
-      constructor(canvas, sfx, name) {
+      constructor(canvas, audioEngine, name) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.sfx = sfx;
+        this.audio = audioEngine;
         this.name = name;
-        this.isDone = false;
+        this.isComplete = false;
         this.stats = {};
         this.highlights = {};
       }
 
-      init(seed, size) { throw new Error("Must implement init()"); }
-      step() { throw new Error("Must implement step()"); }
-      draw() { throw new Error("Must implement draw()"); }
+      init(seed, size) { throw new Error('Must implement init()'); }
+      step() { throw new Error('Must implement step()'); }
+      draw() { throw new Error('Must implement draw()'); }
       
-      get finished() { return this.isDone; }
+      get finished() { return this.isComplete; }
       
-      _clear(color = '#121212') {
+      clear(color = '#0f0f0f') {
         this.ctx.fillStyle = color;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       }
       
-      _finish() {
-        this.isDone = true;
-        this.sfx.finish();
+      finish() {
+        this.isComplete = true;
+        this.audio.complete();
       }
     }
 
-    // ========================= Sorting Algorithms =========================
+    // Sorting Algorithms
     class SortingAlgorithm extends Algorithm {
-      constructor(canvas, sfx, name) {
-        super(canvas, sfx, name);
-        this.arr = [];
+      constructor(canvas, audioEngine, name) {
+        super(canvas, audioEngine, name);
+        this.array = [];
         this.stats = { comparisons: 0, swaps: 0, accesses: 0, steps: 0 };
       }
 
       init(seed, size) {
         const rng = new SeededRNG(seed);
-        this.arr = Array.from({ length: size }, () => rng.int(1, 100));
-        this.isDone = false;
+        this.array = Array.from({ length: size }, () => rng.int(5, 100));
+        this.isComplete = false;
         this.stats = { comparisons: 0, swaps: 0, accesses: 0, steps: 0 };
         this.highlights = {};
       }
 
       draw() {
-        this._clear();
+        this.clear();
         const { width, height } = this.canvas;
-        const n = this.arr.length;
-        const barWidth = width / n;
-        const maxVal = Math.max(...this.arr, 1);
+        const barWidth = width / this.array.length;
+        const maxValue = Math.max(...this.array);
 
-        for (let i = 0; i < n; i++) {
-          const barHeight = Math.max(2, (this.arr[i] / maxVal) * (height - 20));
-          let color = '#4a4a4a';
+        for (let i = 0; i < this.array.length; i++) {
+          const barHeight = (this.array[i] / maxValue) * (height - 20);
           
+          // Default color
+          let color = '#4a90e2';
+          
+          // Apply highlights
           if (this.highlights[i]) {
             color = this.highlights[i];
           }
           
-          // Gradient effect
+          // Draw bar with gradient
           const gradient = this.ctx.createLinearGradient(0, height - barHeight, 0, height);
           gradient.addColorStop(0, color);
-          gradient.addColorStop(1, this._darkenColor(color, 0.3));
+          gradient.addColorStop(1, this.darkenColor(color, 0.3));
           
           this.ctx.fillStyle = gradient;
-          this.ctx.fillRect(i * barWidth + 1, height - barHeight - 10, Math.max(1, barWidth - 2), barHeight);
+          this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
           
-          // Add glow effect for highlighted bars
+          // Add glow for highlighted elements
           if (this.highlights[i]) {
             this.ctx.shadowColor = color;
-            this.ctx.shadowBlur = 10;
-            this.ctx.fillRect(i * barWidth + 1, height - barHeight - 10, Math.max(1, barWidth - 2), barHeight);
+            this.ctx.shadowBlur = 15;
+            this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
             this.ctx.shadowBlur = 0;
           }
         }
+        
+        // Clear highlights after drawing
         this.highlights = {};
       }
-      
-      _darkenColor(color, amount) {
-        return color + Math.floor(255 * amount).toString(16).padStart(2, '0');
+
+      darkenColor(color, amount) {
+        const colorMap = {
+          '#ff6b6b': '#cc5555',
+          '#4ecdc4': '#3ba39d',
+          '#45b7d1': '#3692a7',
+          '#feca57': '#cb9f46',
+          '#ff9ff3': '#cc7fc2',
+          '#4a90e2': '#3a73b5'
+        };
+        return colorMap[color] || color;
       }
     }
 
@@ -464,75 +435,80 @@
         super.init(seed, size);
         this.i = 0;
         this.j = 0;
+        this.n = this.array.length;
       }
 
       step() {
-        if (this.finished) return;
+        if (this.isComplete) return;
+        
         this.stats.steps++;
         
-        const n = this.arr.length;
-        if (this.i >= n - 1) {
-          this._finish();
+        if (this.i >= this.n - 1) {
+          this.finish();
           return;
         }
 
+        if (this.j >= this.n - 1 - this.i) {
+          this.highlights[this.n - 1 - this.i] = '#4ecdc4'; // Mark as sorted
+          this.i++;
+          this.j = 0;
+          return;
+        }
+
+        // Highlight current comparison
         this.highlights[this.j] = '#ff6b6b';
         this.highlights[this.j + 1] = '#ff6b6b';
         
         this.stats.comparisons++;
         this.stats.accesses += 2;
         
-        if (this.arr[this.j] > this.arr[this.j + 1]) {
-          [this.arr[this.j], this.arr[this.j + 1]] = [this.arr[this.j + 1], this.arr[this.j]];
+        if (this.array[this.j] > this.array[this.j + 1]) {
+          // Swap
+          [this.array[this.j], this.array[this.j + 1]] = [this.array[this.j + 1], this.array[this.j]];
           this.stats.swaps++;
-          this.highlights[this.j] = '#4ecdc4';
-          this.highlights[this.j + 1] = '#4ecdc4';
-          this.sfx.swap();
+          this.highlights[this.j] = '#feca57';
+          this.highlights[this.j + 1] = '#feca57';
+          this.audio.swap();
         } else {
-          this.sfx.compare();
+          this.audio.compare();
         }
-
+        
         this.j++;
-        if (this.j >= n - 1 - this.i) {
-          this.highlights[n - 1 - this.i] = '#45b7d1';
-          this.j = 0;
-          this.i++;
-        }
       }
     }
 
     class QuickSort extends SortingAlgorithm {
       init(seed, size) {
         super.init(seed, size);
-        this.stack = [[0, this.arr.length - 1]];
-        this.pivotIndex = -1;
+        this.stack = [{low: 0, high: this.array.length - 1}];
+        this.currentPivot = -1;
+        this.partitionStep = null;
       }
 
       step() {
-        if (this.finished) return;
+        if (this.isComplete) return;
+        
         this.stats.steps++;
         
         if (this.stack.length === 0) {
-          this._finish();
+          this.finish();
           return;
         }
 
-        const [low, high] = this.stack.pop();
+        const {low, high} = this.stack.pop();
+        
         if (low < high) {
-          const pi = this._partition(low, high);
-          this.stack.push([low, pi - 1]);
-          this.stack.push([pi + 1, high]);
-          this.pivotIndex = pi;
-          this.highlights[pi] = '#45b7d1';
-          this.sfx.swap();
-        } else {
-          this.sfx.access();
+          const pivotIndex = this.partition(low, high);
+          this.stack.push({low: low, high: pivotIndex - 1});
+          this.stack.push({low: pivotIndex + 1, high: high});
+          this.highlights[pivotIndex] = '#4ecdc4';
+          this.audio.swap();
         }
       }
 
-      _partition(low, high) {
-        const pivot = this.arr[high];
-        this.highlights[high] = '#ff9ff3';
+      partition(low, high) {
+        const pivot = this.array[high];
+        this.highlights[high] = '#ff9ff3'; // Pivot color
         let i = low - 1;
 
         for (let j = low; j < high; j++) {
@@ -540,166 +516,75 @@
           this.stats.accesses += 2;
           this.highlights[j] = '#feca57';
           
-          if (this.arr[j] < pivot) {
+          if (this.array[j] < pivot) {
             i++;
-            [this.arr[i], this.arr[j]] = [this.arr[j], this.arr[i]];
+            [this.array[i], this.array[j]] = [this.array[j], this.array[i]];
             this.stats.swaps++;
-            this.highlights[i] = '#48dbfb';
+            this.highlights[i] = '#45b7d1';
           }
         }
         
-        [this.arr[i + 1], this.arr[high]] = [this.arr[high], this.arr[i + 1]];
+        [this.array[i + 1], this.array[high]] = [this.array[high], this.array[i + 1]];
         this.stats.swaps++;
         return i + 1;
       }
     }
 
-    class MergeSort extends SortingAlgorithm {
+    class SelectionSort extends SortingAlgorithm {
       init(seed, size) {
         super.init(seed, size);
-        this.stack = [[0, this.arr.length - 1, 'split']];
-        this.temp = new Array(this.arr.length);
+        this.i = 0;
+        this.j = 1;
+        this.minIndex = 0;
+        this.n = this.array.length;
       }
 
       step() {
-        if (this.finished) return;
+        if (this.isComplete) return;
+        
         this.stats.steps++;
-
-        if (this.stack.length === 0) {
-          this._finish();
+        
+        if (this.i >= this.n - 1) {
+          this.finish();
           return;
         }
 
-        const [left, right, action] = this.stack.pop();
-        
-        if (action === 'split') {
-          if (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            this.stack.push([left, right, 'merge']);
-            this.stack.push([mid + 1, right, 'split']);
-            this.stack.push([left, mid, 'split']);
-            this.sfx.access();
-          }
-        } else if (action === 'merge') {
-          const mid = Math.floor((left + right) / 2);
-          this._merge(left, mid, right);
-          this.sfx.swap();
-        }
-      }
-
-      _merge(left, mid, right) {
-        let i = left, j = mid + 1, k = left;
-        
-        for (let x = left; x <= right; x++) {
-          this.temp[x] = this.arr[x];
-          this.highlights[x] = '#54a0ff';
-        }
-
-        while (i <= mid && j <= right) {
-          this.stats.comparisons++;
-          this.stats.accesses += 2;
-          
-          if (this.temp[i] <= this.temp[j]) {
-            this.arr[k] = this.temp[i];
-            this.highlights[k] = '#5f27cd';
-            i++;
-          } else {
-            this.arr[k] = this.temp[j];
-            this.highlights[k] = '#ff9ff3';
-            j++;
-          }
-          k++;
-        }
-
-        while (i <= mid) {
-          this.arr[k] = this.temp[i];
-          this.highlights[k] = '#5f27cd';
-          i++; k++;
-          this.stats.accesses++;
-        }
-
-        while (j <= right) {
-          this.arr[k] = this.temp[j];
-          this.highlights[k] = '#ff9ff3';
-          j++; k++;
-          this.stats.accesses++;
-        }
-      }
-    }
-
-    class HeapSort extends SortingAlgorithm {
-      init(seed, size) {
-        super.init(seed, size);
-        this.heapSize = this.arr.length;
-        this.phase = 'build';
-        this.i = Math.floor(this.arr.length / 2) - 1;
-        this.currentHeapify = [];
-      }
-
-      step() {
-        if (this.finished) return;
-        this.stats.steps++;
-
-        if (this.phase === 'build') {
-          if (this.i >= 0) {
-            this._heapify(this.i);
-            this.i--;
-            this.sfx.access();
-          } else {
-            this.phase = 'sort';
-            this.i = this.arr.length - 1;
-          }
-        } else if (this.phase === 'sort') {
-          if (this.i > 0) {
-            [this.arr[0], this.arr[this.i]] = [this.arr[this.i], this.arr[0]];
+        if (this.j >= this.n) {
+          // End of inner loop - perform swap
+          if (this.minIndex !== this.i) {
+            [this.array[this.i], this.array[this.minIndex]] = [this.array[this.minIndex], this.array[this.i]];
             this.stats.swaps++;
-            this.highlights[0] = '#ff6b6b';
-            this.highlights[this.i] = '#4ecdc4';
-            this.heapSize--;
-            this._heapify(0);
-            this.i--;
-            this.sfx.swap();
-          } else {
-            this._finish();
+            this.audio.swap();
           }
-        }
-      }
-
-      _heapify(i) {
-        let largest = i;
-        const left = 2 * i + 1;
-        const right = 2 * i + 2;
-
-        this.highlights[i] = '#feca57';
-
-        if (left < this.heapSize) {
-          this.stats.comparisons++;
-          this.stats.accesses += 2;
-          this.highlights[left] = '#ff9ff3';
-          if (this.arr[left] > this.arr[largest]) largest = left;
+          
+          this.highlights[this.i] = '#4ecdc4'; // Mark as sorted
+          this.i++;
+          this.minIndex = this.i;
+          this.j = this.i + 1;
+          return;
         }
 
-        if (right < this.heapSize) {
-          this.stats.comparisons++;
-          this.stats.accesses += 2;
-          this.highlights[right] = '#48dbfb';
-          if (this.arr[right] > this.arr[largest]) largest = right;
+        // Highlight current comparison
+        this.highlights[this.minIndex] = '#ff6b6b';
+        this.highlights[this.j] = '#feca57';
+        
+        this.stats.comparisons++;
+        this.stats.accesses += 2;
+        
+        if (this.array[this.j] < this.array[this.minIndex]) {
+          this.minIndex = this.j;
         }
-
-        if (largest !== i) {
-          [this.arr[i], this.arr[largest]] = [this.arr[largest], this.arr[i]];
-          this.stats.swaps++;
-          this.highlights[largest] = '#5f27cd';
-          this._heapify(largest);
-        }
+        
+        this.audio.compare();
+        this.j++;
       }
     }
 
-    // ========================= Search Algorithms =========================
+    // Search Algorithms
     class SearchAlgorithm extends Algorithm {
-      constructor(canvas, sfx, name) {
-        super(canvas, sfx, name);
-        this.arr = [];
+      constructor(canvas, audioEngine, name) {
+        super(canvas, audioEngine, name);
+        this.array = [];
         this.target = 0;
         this.found = false;
         this.foundIndex = -1;
@@ -708,48 +593,54 @@
 
       init(seed, size) {
         const rng = new SeededRNG(seed);
-        this.arr = Array.from({ length: size }, (_, i) => i + 1).sort(() => rng.random() - 0.5);
-        this.target = this.arr[rng.int(0, this.arr.length - 1)];
+        this.array = Array.from({ length: size }, (_, i) => i + 1);
+        // Shuffle array
+        for (let i = this.array.length - 1; i > 0; i--) {
+          const j = rng.int(0, i);
+          [this.array[i], this.array[j]] = [this.array[j], this.array[i]];
+        }
+        
+        this.target = this.array[rng.int(0, this.array.length - 1)];
         this.found = false;
         this.foundIndex = -1;
-        this.isDone = false;
+        this.isComplete = false;
         this.stats = { comparisons: 0, accesses: 0, steps: 0 };
         this.highlights = {};
       }
 
       draw() {
-        this._clear();
+        this.clear();
         const { width, height } = this.canvas;
-        const n = this.arr.length;
-        const barWidth = width / n;
-        const maxVal = Math.max(...this.arr, 1);
+        const barWidth = width / this.array.length;
+        const maxValue = Math.max(...this.array);
 
-        // Draw target indicator
+        // Draw target info
         this.ctx.fillStyle = '#ff6b6b';
-        this.ctx.font = '16px Arial';
+        this.ctx.font = 'bold 16px Arial';
         this.ctx.fillText(`Target: ${this.target}`, 10, 25);
 
-        for (let i = 0; i < n; i++) {
-          const barHeight = Math.max(2, (this.arr[i] / maxVal) * (height - 40));
-          let color = '#4a4a4a';
+        for (let i = 0; i < this.array.length; i++) {
+          const barHeight = (this.array[i] / maxValue) * (height - 40);
           
-          if (this.highlights[i]) {
+          let color = '#4a90e2';
+          if (this.found && i === this.foundIndex) {
+            color = '#4ecdc4'; // Found
+          } else if (this.highlights[i]) {
             color = this.highlights[i];
-          } else if (this.found && i === this.foundIndex) {
-            color = '#00ff00';
           }
           
           this.ctx.fillStyle = color;
-          this.ctx.fillRect(i * barWidth + 1, height - barHeight - 10, Math.max(1, barWidth - 2), barHeight);
+          this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 1, barHeight);
           
-          // Draw value on bar if space allows
-          if (barWidth > 15) {
+          // Draw value if space allows
+          if (barWidth > 20) {
             this.ctx.fillStyle = '#fff';
             this.ctx.font = '10px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(this.arr[i], i * barWidth + barWidth/2, height - 5);
+            this.ctx.fillText(this.array[i], i * barWidth + barWidth/2, height - 5);
           }
         }
+        
         this.highlights = {};
       }
     }
@@ -761,11 +652,12 @@
       }
 
       step() {
-        if (this.finished) return;
+        if (this.isComplete) return;
+        
         this.stats.steps++;
-
-        if (this.currentIndex >= this.arr.length) {
-          this._finish();
+        
+        if (this.currentIndex >= this.array.length) {
+          this.finish();
           return;
         }
 
@@ -773,16 +665,14 @@
         this.stats.accesses++;
         this.stats.comparisons++;
 
-        if (this.arr[this.currentIndex] === this.target) {
+        if (this.array[this.currentIndex] === this.target) {
           this.found = true;
           this.foundIndex = this.currentIndex;
-          this.highlights[this.currentIndex] = '#00ff00';
-          this.sfx.finish();
-          this._finish();
+          this.finish();
           return;
         }
 
-        this.sfx.compare();
+        this.audio.compare();
         this.currentIndex++;
       }
     }
@@ -790,444 +680,281 @@
     class BinarySearch extends SearchAlgorithm {
       init(seed, size) {
         super.init(seed, size);
-        this.arr.sort((a, b) => a - b); // Binary search needs sorted array
+        this.array.sort((a, b) => a - b); // Binary search requires sorted array
         this.left = 0;
-        this.right = this.arr.length - 1;
+        this.right = this.array.length - 1;
         this.mid = -1;
       }
 
       step() {
-        if (this.finished) return;
+        if (this.isComplete) return;
+        
         this.stats.steps++;
-
+        
         if (this.left > this.right) {
-          this._finish();
+          this.finish();
           return;
         }
 
         this.mid = Math.floor((this.left + this.right) / 2);
+        
+        // Highlight search range
         this.highlights[this.left] = '#ff9ff3';
-        this.highlights[this.right] = '#48dbfb';
+        this.highlights[this.right] = '#ff9ff3';
         this.highlights[this.mid] = '#feca57';
 
         this.stats.accesses++;
         this.stats.comparisons++;
 
-        if (this.arr[this.mid] === this.target) {
+        if (this.array[this.mid] === this.target) {
           this.found = true;
           this.foundIndex = this.mid;
-          this.highlights[this.mid] = '#00ff00';
-          this.sfx.finish();
-          this._finish();
+          this.finish();
           return;
         }
 
-        if (this.arr[this.mid] < this.target) {
+        if (this.array[this.mid] < this.target) {
           this.left = this.mid + 1;
         } else {
           this.right = this.mid - 1;
         }
 
-        this.sfx.compare();
+        this.audio.compare();
       }
     }
 
-    // ========================= Graph Algorithms =========================
-    class GraphAlgorithm extends Algorithm {
-      constructor(canvas, sfx, name) {
-        super(canvas, sfx, name);
-        this.gridSize = 30;
+    // Pathfinding Algorithms
+    class PathfindingAlgorithm extends Algorithm {
+      constructor(canvas, audioEngine, name) {
+        super(canvas, audioEngine, name);
+        this.gridSize = 40;
         this.grid = [];
+        this.start = null;
+        this.goal = null;
         this.visited = new Set();
-        this.path = new Set();
+        this.path = [];
         this.stats = { nodesVisited: 0, pathLength: 0, steps: 0 };
       }
 
       init(seed) {
         const rng = new SeededRNG(seed);
-        this.grid = Array.from({ length: this.gridSize }, () =>
-          Array.from({ length: this.gridSize }, () => ({
-            type: rng.random() < 0.25 ? 'wall' : 'empty',
-            distance: Infinity,
-            visited: false
-          }))
-        );
+        this.grid = [];
+        
+        // Initialize grid
+        for (let y = 0; y < this.gridSize; y++) {
+          this.grid[y] = [];
+          for (let x = 0; x < this.gridSize; x++) {
+            this.grid[y][x] = {
+              x, y,
+              isWall: rng.random() < 0.3,
+              isVisited: false,
+              isPath: false,
+              distance: Infinity,
+              parent: null
+            };
+          }
+        }
 
-        this.start = { x: 1, y: 1 };
-        this.goal = { x: this.gridSize - 2, y: this.gridSize - 2 };
-        
-        // Ensure start and goal are empty
-        this.grid[this.start.y][this.start.x].type = 'empty';
-        this.grid[this.goal.y][this.goal.x].type = 'empty';
-        
+        // Set start and goal
+        this.start = this.grid[1][1];
+        this.goal = this.grid[this.gridSize - 2][this.gridSize - 2];
+        this.start.isWall = false;
+        this.goal.isWall = false;
+
         this.visited.clear();
-        this.path.clear();
-        this.isDone = false;
+        this.path = [];
+        this.isComplete = false;
         this.stats = { nodesVisited: 0, pathLength: 0, steps: 0 };
       }
 
       draw() {
-        this._clear();
+        this.clear();
         const { width, height } = this.canvas;
         const cellSize = Math.min(width / this.gridSize, height / this.gridSize);
 
         for (let y = 0; y < this.gridSize; y++) {
           for (let x = 0; x < this.gridSize; x++) {
             const cell = this.grid[y][x];
-            const key = `${x},${y}`;
-            
+            const pixelX = x * cellSize;
+            const pixelY = y * cellSize;
+
             let color = '#2a2a2a';
-            if (cell.type === 'wall') color = '#444';
-            if (x === this.start.x && y === this.start.y) color = '#00ff00';
-            if (x === this.goal.x && y === this.goal.y) color = '#ff0000';
-            if (this.path.has(key)) color = '#ffd700';
-            if (this.visited.has(key)) color = '#4ecdc4';
+            if (cell.isWall) color = '#666';
+            if (cell.isVisited) color = '#4ecdc4';
+            if (cell.isPath) color = '#feca57';
+            if (cell === this.start) color = '#4CAF50';
+            if (cell === this.goal) color = '#F44336';
 
             this.ctx.fillStyle = color;
-            this.ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
-
-            // Add glow effect for special cells
-            if (this.path.has(key) || (x === this.start.x && y === this.start.y) || (x === this.goal.x && y === this.goal.y)) {
-              this.ctx.shadowColor = color;
-              this.ctx.shadowBlur = 8;
-              this.ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
-              this.ctx.shadowBlur = 0;
-            }
+            this.ctx.fillRect(pixelX, pixelY, cellSize - 1, cellSize - 1);
           }
         }
       }
+
+      getNeighbors(cell) {
+        const neighbors = [];
+        const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+        
+        for (const [dx, dy] of directions) {
+          const newX = cell.x + dx;
+          const newY = cell.y + dy;
+          
+          if (newX >= 0 && newX < this.gridSize && newY >= 0 && newY < this.gridSize) {
+            const neighbor = this.grid[newY][newX];
+            if (!neighbor.isWall) {
+              neighbors.push(neighbor);
+            }
+          }
+        }
+        
+        return neighbors;
+      }
+
+      reconstructPath(endCell) {
+        this.path = [];
+        let current = endCell;
+        
+        while (current && current !== this.start) {
+          current.isPath = true;
+          this.path.unshift(current);
+          current = current.parent;
+        }
+        
+        if (this.start) {
+          this.start.isPath = true;
+        }
+        
+        this.stats.pathLength = this.path.length;
+      }
     }
 
-    class Dijkstra extends GraphAlgorithm {
+    class BFS extends PathfindingAlgorithm {
       init(seed) {
         super.init(seed);
-        this.frontier = [{ x: this.start.x, y: this.start.y, dist: 0 }];
-        this.cameFrom = new Map();
-        this.distances = new Map([[`${this.start.x},${this.start.y}`, 0]]);
+        this.queue = [this.start];
+        this.start.isVisited = true;
+        this.start.distance = 0;
       }
 
       step() {
-        if (this.finished || this.frontier.length === 0) {
-          if (!this.finished) this._finish();
-          return;
-        }
-
+        if (this.isComplete) return;
+        
         this.stats.steps++;
-        this.frontier.sort((a, b) => b.dist - a.dist);
-        const current = this.frontier.pop();
-        const currentKey = `${current.x},${current.y}`;
-
-        if (this.visited.has(currentKey)) {
-          this.sfx.access();
+        
+        if (this.queue.length === 0) {
+          this.finish();
           return;
         }
 
-        this.visited.add(currentKey);
+        const current = this.queue.shift();
         this.stats.nodesVisited++;
-        this.sfx.compare();
 
-        if (current.x === this.goal.x && current.y === this.goal.y) {
-          this._reconstructPath();
-          this._finish();
+        if (current === this.goal) {
+          this.reconstructPath(current);
+          this.finish();
           return;
         }
 
-        const neighbors = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-        for (const [dx, dy] of neighbors) {
-          const nx = current.x + dx;
-          const ny = current.y + dy;
-          
-          if (nx >= 0 && nx < this.gridSize && ny >= 0 && ny < this.gridSize && 
-              this.grid[ny][nx].type !== 'wall') {
-            const neighborKey = `${nx},${ny}`;
-            const newDist = current.dist + 1;
-            
-            if (!this.distances.has(neighborKey) || newDist < this.distances.get(neighborKey)) {
-              this.distances.set(neighborKey, newDist);
-              this.cameFrom.set(neighborKey, current);
-              this.frontier.push({ x: nx, y: ny, dist: newDist });
-            }
+        const neighbors = this.getNeighbors(current);
+        for (const neighbor of neighbors) {
+          if (!neighbor.isVisited) {
+            neighbor.isVisited = true;
+            neighbor.parent = current;
+            neighbor.distance = current.distance + 1;
+            this.queue.push(neighbor);
           }
         }
-      }
 
-      _reconstructPath() {
-        let currentKey = `${this.goal.x},${this.goal.y}`;
-        while (currentKey && this.cameFrom.has(currentKey)) {
-          this.path.add(currentKey);
-          const prev = this.cameFrom.get(currentKey);
-          currentKey = `${prev.x},${prev.y}`;
-          this.stats.pathLength++;
-        }
+        this.audio.access();
       }
     }
 
-    class AStar extends GraphAlgorithm {
+    class DFS extends PathfindingAlgorithm {
       init(seed) {
         super.init(seed);
-        this.openSet = [{ x: this.start.x, y: this.start.y, f: 0, g: 0, h: 0 }];
-        this.closedSet = new Set();
-        this.cameFrom = new Map();
+        this.stack = [this.start];
+        this.start.isVisited = true;
       }
 
       step() {
-        if (this.finished || this.openSet.length === 0) {
-          if (!this.finished) this._finish();
+        if (this.isComplete) return;
+        
+        this.stats.steps++;
+        
+        if (this.stack.length === 0) {
+          this.finish();
           return;
         }
 
-        this.stats.steps++;
-        this.openSet.sort((a, b) => b.f - a.f);
-        const current = this.openSet.pop();
-        const currentKey = `${current.x},${current.y}`;
-
-        this.closedSet.add(currentKey);
-        this.visited.add(currentKey);
+        const current = this.stack.pop();
         this.stats.nodesVisited++;
 
-        if (current.x === this.goal.x && current.y === this.goal.y) {
-          this._reconstructPath();
-          this._finish();
+        if (current === this.goal) {
+          this.reconstructPath(current);
+          this.finish();
           return;
         }
 
-        const neighbors = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-        for (const [dx, dy] of neighbors) {
-          const nx = current.x + dx;
-          const ny = current.y + dy;
-          const neighborKey = `${nx},${ny}`;
-
-          if (nx >= 0 && nx < this.gridSize && ny >= 0 && ny < this.gridSize && 
-              this.grid[ny][nx].type !== 'wall' && !this.closedSet.has(neighborKey)) {
-            
-            const g = current.g + 1;
-            const h = Math.abs(nx - this.goal.x) + Math.abs(ny - this.goal.y);
-            const f = g + h;
-
-            const existing = this.openSet.find(node => node.x === nx && node.y === ny);
-            if (!existing || g < existing.g) {
-              if (existing) {
-                existing.g = g;
-                existing.f = f;
-              } else {
-                this.openSet.push({ x: nx, y: ny, f, g, h });
-              }
-              this.cameFrom.set(neighborKey, current);
-            }
+        const neighbors = this.getNeighbors(current);
+        for (const neighbor of neighbors) {
+          if (!neighbor.isVisited) {
+            neighbor.isVisited = true;
+            neighbor.parent = current;
+            this.stack.push(neighbor);
           }
         }
-        this.sfx.access();
-      }
 
-      _reconstructPath() {
-        let currentKey = `${this.goal.x},${this.goal.y}`;
-        while (currentKey && this.cameFrom.has(currentKey)) {
-          this.path.add(currentKey);
-          const prev = this.cameFrom.get(currentKey);
-          currentKey = `${prev.x},${prev.y}`;
-          this.stats.pathLength++;
-        }
+        this.audio.access();
       }
     }
 
-    // ========================= Tree Algorithms =========================
-    class TreeNode {
-      constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.x = 0;
-        this.y = 0;
-        this.visited = false;
-      }
-    }
-
-    class TreeAlgorithm extends Algorithm {
-      constructor(canvas, sfx, name) {
-        super(canvas, sfx, name);
-        this.root = null;
-        this.nodes = [];
-        this.currentNode = null;
-        this.traversalOrder = [];
-        this.stats = { nodesVisited: 0, steps: 0 };
-      }
-
-      init(seed, size) {
-        const rng = new SeededRNG(seed);
-        const values = Array.from({ length: Math.min(size, 31) }, () => rng.int(1, 99));
-        
-        this.root = null;
-        this.nodes = [];
-        this.traversalOrder = [];
-        
-        // Build BST
-        for (const value of values) {
-          this.root = this._insertNode(this.root, value);
-        }
-        
-        this._calculatePositions();
-        this.isDone = false;
-        this.stats = { nodesVisited: 0, steps: 0 };
-      }
-
-      _insertNode(root, value) {
-        if (!root) {
-          const node = new TreeNode(value);
-          this.nodes.push(node);
-          return node;
-        }
-        
-        if (value < root.value) {
-          root.left = this._insertNode(root.left, value);
-        } else if (value > root.value) {
-          root.right = this._insertNode(root.right, value);
-        }
-        return root;
-      }
-
-      _calculatePositions() {
-        if (!this.root) return;
-        
-        const levels = [];
-        const queue = [{ node: this.root, level: 0, position: 0 }];
-        
-        while (queue.length > 0) {
-          const { node, level, position } = queue.shift();
-          
-          if (!levels[level]) levels[level] = [];
-          levels[level].push({ node, position });
-          
-          if (node.left) queue.push({ node: node.left, level: level + 1, position: position * 2 });
-          if (node.right) queue.push({ node: node.right, level: level + 1, position: position * 2 + 1 });
-        }
-
-        const { width, height } = this.canvas;
-        const levelHeight = height / (levels.length + 1);
-        
-        for (let i = 0; i < levels.length; i++) {
-          const level = levels[i];
-          const levelWidth = width / (Math.pow(2, i) + 1);
-          
-          level.forEach(({ node, position }, index) => {
-            node.x = (position + 1) * levelWidth;
-            node.y = (i + 1) * levelHeight;
-          });
-        }
-      }
-
-      draw() {
-        this._clear();
-        
-        // Draw edges first
-        this.ctx.strokeStyle = '#666';
-        this.ctx.lineWidth = 2;
-        this._drawEdges(this.root);
-        
-        // Draw nodes
-        for (const node of this.nodes) {
-          let color = '#4a4a4a';
-          if (node === this.currentNode) color = '#feca57';
-          if (node.visited) color = '#4ecdc4';
-          
-          this.ctx.fillStyle = color;
-          this.ctx.beginPath();
-          this.ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
-          this.ctx.fill();
-          
-          this.ctx.strokeStyle = '#fff';
-          this.ctx.stroke();
-          
-          // Draw value
-          this.ctx.fillStyle = '#fff';
-          this.ctx.font = '14px Arial';
-          this.ctx.textAlign = 'center';
-          this.ctx.fillText(node.value, node.x, node.y + 5);
-        }
-      }
-
-      _drawEdges(node) {
-        if (!node) return;
-        
-        if (node.left) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(node.x, node.y);
-          this.ctx.lineTo(node.left.x, node.left.y);
-          this.ctx.stroke();
-          this._drawEdges(node.left);
-        }
-        
-        if (node.right) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(node.x, node.y);
-          this.ctx.lineTo(node.right.x, node.right.y);
-          this.ctx.stroke();
-          this._drawEdges(node.right);
-        }
-      }
-    }
-
-    class InOrderTraversal extends TreeAlgorithm {
-      init(seed, size) {
-        super.init(seed, size);
-        this.stack = [];
-        this.currentNode = this.root;
-      }
-
-      step() {
-        if (this.finished) return;
-        this.stats.steps++;
-
-        if (!this.currentNode && this.stack.length === 0) {
-          this._finish();
-          return;
-        }
-
-        if (this.currentNode) {
-          this.stack.push(this.currentNode);
-          this.currentNode = this.currentNode.left;
-          this.sfx.access();
-        } else {
-          this.currentNode = this.stack.pop();
-          this.currentNode.visited = true;
-          this.traversalOrder.push(this.currentNode.value);
-          this.stats.nodesVisited++;
-          this.currentNode = this.currentNode.right;
-          this.sfx.compare();
-        }
-      }
-    }
-
-    // ========================= Main Application =========================
+    // Algorithm Registry
     const ALGORITHMS = {
       sorting: {
-        'bubble-sort': { name: 'Bubble Sort', class: BubbleSort, desc: 'O(n²) - Simple comparison sort' },
-        'quick-sort': { name: 'Quick Sort', class: QuickSort, desc: 'O(n log n) - Divide and conquer' },
-        'merge-sort': { name: 'Merge Sort', class: MergeSort, desc: 'O(n log n) - Stable divide and conquer' },
-        'heap-sort': { name: 'Heap Sort', class: HeapSort, desc: 'O(n log n) - Selection-based using heap' }
+        'bubble-sort': { name: 'Bubble Sort', class: BubbleSort, desc: 'O(n²) - Simple comparison-based sort' },
+        'selection-sort': { name: 'Selection Sort', class: SelectionSort, desc: 'O(n²) - Finds minimum element repeatedly' },
+        'quick-sort': { name: 'Quick Sort', class: QuickSort, desc: 'O(n log n) - Efficient divide-and-conquer sort' }
       },
       searching: {
-        'linear-search': { name: 'Linear Search', class: LinearSearch, desc: 'O(n) - Sequential search' },
-        'binary-search': { name: 'Binary Search', class: BinarySearch, desc: 'O(log n) - Sorted array search' }
+        'linear-search': { name: 'Linear Search', class: LinearSearch, desc: 'O(n) - Sequential search through array' },
+        'binary-search': { name: 'Binary Search', class: BinarySearch, desc: 'O(log n) - Efficient search on sorted array' }
       },
-      graph: {
-        'dijkstra': { name: "Dijkstra's Algorithm", class: Dijkstra, desc: 'Shortest path algorithm' },
-        'a-star': { name: 'A* Search', class: AStar, desc: 'Heuristic shortest path' }
-      },
-      tree: {
-        'inorder-traversal': { name: 'In-Order Traversal', class: InOrderTraversal, desc: 'Left-Root-Right traversal' }
+      pathfinding: {
+        'bfs': { name: 'Breadth-First Search', class: BFS, desc: 'Explores all neighbors before going deeper' },
+        'dfs': { name: 'Depth-First Search', class: DFS, desc: 'Explores as far as possible before backtracking' }
       }
     };
 
-    class App {
+    // Main Application Class
+    class AlgorithmVisualizer {
       constructor() {
-        this.dom = {
-          category: document.getElementById('categorySelect'),
-          algorithm: document.getElementById('algorithmSelect'),
-          speed: document.getElementById('speedSlider'),
-          size: document.getElementById('sizeSlider'),
-          playPause: document.getElementById('playPauseBtn'),
-          reset: document.getElementById('resetBtn'),
-          battle: document.getElementById('battleModeBtn'),
+        this.initializeDOM();
+        this.audioEngine = new AudioEngine();
+        this.algorithmA = null;
+        this.algorithmB = null;
+        this.isPlaying = false;
+        this.animationId = null;
+        this.lastStepTime = 0;
+        this.seed = Date.now();
+
+        this.setupEventListeners();
+        this.populateControls();
+        this.resizeCanvases();
+        this.resetAlgorithms();
+        this.startAnimationLoop();
+      }
+
+      initializeDOM() {
+        this.elements = {
+          categorySelect: document.getElementById('categorySelect'),
+          algorithmSelect: document.getElementById('algorithmSelect'),
+          speedSlider: document.getElementById('speedSlider'),
+          speedValue: document.getElementById('speedValue'),
+          sizeSlider: document.getElementById('sizeSlider'),
+          sizeValue: document.getElementById('sizeValue'),
+          playPauseBtn: document.getElementById('playPauseBtn'),
+          resetBtn: document.getElementById('resetBtn'),
+          battleModeBtn: document.getElementById('battleModeBtn'),
           canvasA: document.getElementById('canvas'),
           canvasB: document.getElementById('canvasBattle'),
           main: document.querySelector('main'),
@@ -1236,37 +963,40 @@
           algoInfoA: document.getElementById('algoInfoA'),
           algoInfoB: document.getElementById('algoInfoB')
         };
-
-        this.sfx = new AudioEngine();
-        this.simA = null;
-        this.simB = null;
-        this.isRunning = false;
-        this.lastFrameTime = 0;
-        this.seed = Date.now();
-
-        this._setupEventListeners();
-        this.populateCategories();
-        this.updateAlgorithmList();
-        this.resetSim();
-        this.resizeCanvases();
-        
-        // Start the main loop
-        requestAnimationFrame((t) => this.loop(t));
       }
-      
-      _setupEventListeners() {
-        this.dom.category.addEventListener('change', () => {
-          this.updateAlgorithmList();
-          this.resetSim();
+
+      setupEventListeners() {
+        // Control events
+        this.elements.categorySelect.addEventListener('change', () => {
+          this.populateAlgorithms();
+          this.resetAlgorithms();
         });
-        
-        this.dom.algorithm.addEventListener('change', () => this.resetSim());
-        this.dom.size.addEventListener('input', () => this.resetSim());
-        this.dom.playPause.addEventListener('click', () => this.togglePlayPause());
-        this.dom.reset.addEventListener('click', () => this.resetSim(true));
-        this.dom.battle.addEventListener('click', () => this.toggleBattleMode());
-        window.addEventListener('resize', () => this.resizeCanvases());
-        
+
+        this.elements.algorithmSelect.addEventListener('change', () => {
+          this.resetAlgorithms();
+        });
+
+        this.elements.speedSlider.addEventListener('input', (e) => {
+          this.elements.speedValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
+        });
+
+        this.elements.sizeSlider.addEventListener('input', (e) => {
+          this.elements.sizeValue.textContent = e.target.value;
+          this.resetAlgorithms();
+        });
+
+        this.elements.playPauseBtn.addEventListener('click', () => {
+          this.togglePlayPause();
+        });
+
+        this.elements.resetBtn.addEventListener('click', () => {
+          this.resetAlgorithms(true);
+        });
+
+        this.elements.battleModeBtn.addEventListener('click', () => {
+          this.toggleBattleMode();
+        });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
           switch (e.code) {
@@ -1276,7 +1006,7 @@
               break;
             case 'KeyR':
               e.preventDefault();
-              this.resetSim(true);
+              this.resetAlgorithms(true);
               break;
             case 'KeyB':
               e.preventDefault();
@@ -1284,165 +1014,182 @@
               break;
           }
         });
+
+        // Window resize
+        window.addEventListener('resize', () => {
+          this.resizeCanvases();
+        });
       }
-      
-      populateCategories() {
-        const categoryMap = { 
-          sorting: '📊 Sorting', 
-          searching: '🔍 Searching',
-          graph: '🗺️ Graph', 
-          tree: '🌳 Tree'
-        };
-        
-        this.dom.category.innerHTML = Object.keys(ALGORITHMS)
-          .map(key => `<option value="${key}">${categoryMap[key]}</option>`)
+
+      populateControls() {
+        // Populate categories
+        this.elements.categorySelect.innerHTML = Object.keys(ALGORITHMS)
+          .map(key => `<option value="${key}">${key.charAt(0).toUpperCase() + key.slice(1)}</option>`)
           .join('');
+
+        this.populateAlgorithms();
       }
-      
-      updateAlgorithmList() {
-        const category = this.dom.category.value;
-        const list = ALGORITHMS[category];
-        this.dom.algorithm.innerHTML = Object.entries(list)
-          .map(([id, {name}]) => `<option value="${id}">${name}</option>`)
+
+      populateAlgorithms() {
+        const category = this.elements.categorySelect.value;
+        const algorithms = ALGORITHMS[category] || {};
+        
+        this.elements.algorithmSelect.innerHTML = Object.entries(algorithms)
+          .map(([key, {name}]) => `<option value="${key}">${name}</option>`)
           .join('');
       }
 
-      resetSim(newSeed = false) {
-        this.isRunning = false;
-        this.dom.playPause.innerHTML = '▶ Play';
+      resizeCanvases() {
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        
+        [this.elements.canvasA, this.elements.canvasB].forEach(canvas => {
+          const container = canvas.parentElement;
+          const rect = container.getBoundingClientRect();
+          
+          canvas.width = rect.width * devicePixelRatio;
+          canvas.height = rect.height * devicePixelRatio;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.scale(devicePixelRatio, devicePixelRatio);
+          
+          canvas.style.width = rect.width + 'px';
+          canvas.style.height = rect.height + 'px';
+        });
+
+        // Redraw if algorithms exist
+        if (this.algorithmA) this.algorithmA.draw();
+        if (this.algorithmB) this.algorithmB.draw();
+      }
+
+      resetAlgorithms(newSeed = false) {
+        this.isPlaying = false;
+        this.elements.playPauseBtn.textContent = '▶ Play';
         
         if (newSeed) {
           this.seed = Date.now();
         }
-        
-        const category = this.dom.category.value;
-        const algoId = this.dom.algorithm.value;
-        const size = parseInt(this.dom.size.value, 10);
-        
-        const AlgoClass = ALGORITHMS[category][algoId].class;
-        const algoInfo = ALGORITHMS[category][algoId];
-        
-        this.simA = new AlgoClass(this.dom.canvasA, this.sfx, algoInfo.name);
-        this.simA.init(this.seed, size);
-        
-        // Update algorithm info
-        this.dom.algoInfoA.textContent = `${algoInfo.name} - ${algoInfo.desc}`;
-        
-        if (this.dom.main.classList.contains('battle-mode')) {
-          const list = ALGORITHMS[category];
-          const algoIds = Object.keys(list);
-          const otherAlgoId = algoIds.find(id => id !== algoId) || algoId;
-          const OtherAlgoClass = ALGORITHMS[category][otherAlgoId].class;
-          const otherAlgoInfo = ALGORITHMS[category][otherAlgoId];
-          
-          this.simB = new OtherAlgoClass(this.dom.canvasB, this.sfx, otherAlgoInfo.name);
-          this.simB.init(this.seed, size);
-          this.dom.algoInfoB.textContent = `${otherAlgoInfo.name} - ${otherAlgoInfo.desc}`;
-        } else {
-          this.simB = null;
+
+        const category = this.elements.categorySelect.value;
+        const algorithmKey = this.elements.algorithmSelect.value;
+        const size = parseInt(this.elements.sizeSlider.value);
+
+        if (!ALGORITHMS[category] || !ALGORITHMS[category][algorithmKey]) {
+          return;
         }
-        
-        this.drawAll();
+
+        const AlgorithmClass = ALGORITHMS[category][algorithmKey].class;
+        const algorithmInfo = ALGORITHMS[category][algorithmKey];
+
+        // Initialize primary algorithm
+        this.algorithmA = new AlgorithmClass(this.elements.canvasA, this.audioEngine, algorithmInfo.name);
+        this.algorithmA.init(this.seed, size);
+
+        // Update info display
+        this.elements.algoInfoA.textContent = `${algorithmInfo.name} - ${algorithmInfo.desc}`;
+
+        // Initialize battle mode algorithm if enabled
+        if (this.elements.main.classList.contains('battle-mode')) {
+          const algorithmKeys = Object.keys(ALGORITHMS[category]);
+          const otherKey = algorithmKeys.find(key => key !== algorithmKey) || algorithmKeys[0];
+          const OtherAlgorithmClass = ALGORITHMS[category][otherKey].class;
+          const otherInfo = ALGORITHMS[category][otherKey];
+
+          this.algorithmB = new OtherAlgorithmClass(this.elements.canvasB, this.audioEngine, otherInfo.name);
+          this.algorithmB.init(this.seed, size);
+          this.elements.algoInfoB.textContent = `${otherInfo.name} - ${otherInfo.desc}`;
+        } else {
+          this.algorithmB = null;
+          this.elements.algoInfoB.textContent = '';
+          this.elements.statsB.innerHTML = '';
+        }
+
+        // Initial draw and stats update
+        this.drawAlgorithms();
         this.updateStats();
       }
 
       togglePlayPause() {
-        this.isRunning = !this.isRunning;
-        this.dom.playPause.innerHTML = this.isRunning ? '⏸ Pause' : '▶ Play';
+        this.isPlaying = !this.isPlaying;
+        this.elements.playPauseBtn.textContent = this.isPlaying ? '⏸ Pause' : '▶ Play';
+        
+        if (this.isPlaying) {
+          this.lastStepTime = performance.now();
+        }
       }
 
       toggleBattleMode() {
-        this.dom.main.classList.toggle('battle-mode');
-        this.dom.battle.innerHTML = this.dom.main.classList.contains('battle-mode') ? '👁️ Single Mode' : '⚔ Battle Mode';
+        this.elements.main.classList.toggle('battle-mode');
+        const isBattleMode = this.elements.main.classList.contains('battle-mode');
+        this.elements.battleModeBtn.textContent = isBattleMode ? '👁 Single Mode' : '⚔ Battle Mode';
+        
         this.resizeCanvases();
-        this.resetSim();
+        this.resetAlgorithms();
       }
-      
-      loop(timestamp) {
-        const elapsed = timestamp - this.lastFrameTime;
-        const speed = parseFloat(this.dom.speed.value);
-        const stepDelay = Math.max(10, 200 - (speed * 35));
 
-        if (this.isRunning && elapsed >= stepDelay) {
-          this.lastFrameTime = timestamp;
-
-          let stepped = false;
-          if (this.simA && !this.simA.finished) {
-            this.simA.step();
-            stepped = true;
-          }
-          
-          if (this.simB && !this.simB.finished) {
-            this.simB.step();
-            stepped = true;
-          }
-
-          if (stepped) {
-            this.drawAll();
-            this.updateStats();
-          }
-          
-          const allFinished = (!this.simA || this.simA.finished) && (!this.simB || this.simB.finished);
-          if (allFinished) {
-            this.isRunning = false;
-            this.dom.playPause.innerHTML = '▶ Play';
-          }
-        }
-        
-        requestAnimationFrame((t) => this.loop(t));
+      drawAlgorithms() {
+        if (this.algorithmA) this.algorithmA.draw();
+        if (this.algorithmB) this.algorithmB.draw();
       }
-      
-      drawAll() {
-        if (this.simA) this.simA.draw();
-        if (this.simB) this.simB.draw();
-      }
-      
+
       updateStats() {
-        if (this.simA) {
-          this.dom.statsA.innerHTML = Object.entries(this.simA.stats)
-            .map(([key, value]) => `<div>${key}: ${value}</div>`)
+        if (this.algorithmA) {
+          this.elements.statsA.innerHTML = Object.entries(this.algorithmA.stats)
+            .map(([key, value]) => {
+              const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+              return `<div><strong>${formattedKey}:</strong> ${value}</div>`;
+            })
             .join('');
         }
-        
-        if (this.simB) {
-          this.dom.statsB.innerHTML = Object.entries(this.simB.stats)
-            .map(([key, value]) => `<div>${key}: ${value}</div>`)
+
+        if (this.algorithmB) {
+          this.elements.statsB.innerHTML = Object.entries(this.algorithmB.stats)
+            .map(([key, value]) => {
+              const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+              return `<div><strong>${formattedKey}:</strong> ${value}</div>`;
+            })
             .join('');
         }
       }
-      
-      resizeCanvases() {
-        const dpr = window.devicePixelRatio || 1;
-        
-        for (const canvas of [this.dom.canvasA, this.dom.canvasB]) {
-          const container = canvas.parentElement;
-          const rect = container.getBoundingClientRect();
-          
-          canvas.width = rect.width * dpr;
-          canvas.height = rect.height * dpr;
-          
-          const ctx = canvas.getContext('2d');
-          ctx.scale(dpr, dpr);
-          
-          canvas.style.width = rect.width + 'px';
-          canvas.style.height = rect.height + 'px';
-        }
-        
-        // Recalculate positions for tree algorithms
-        if (this.simA && this.simA._calculatePositions) {
-          this.simA._calculatePositions();
-        }
-        if (this.simB && this.simB._calculatePositions) {
-          this.simB._calculatePositions();
-        }
-        
-        this.drawAll();
+
+      startAnimationLoop() {
+        const animate = (currentTime) => {
+          const speed = parseFloat(this.elements.speedSlider.value);
+          const stepInterval = Math.max(50, 500 / speed);
+
+          if (this.isPlaying && currentTime - this.lastStepTime >= stepInterval) {
+            let hasActiveAlgorithm = false;
+
+            if (this.algorithmA && !this.algorithmA.finished) {
+              this.algorithmA.step();
+              hasActiveAlgorithm = true;
+            }
+
+            if (this.algorithmB && !this.algorithmB.finished) {
+              this.algorithmB.step();
+              hasActiveAlgorithm = true;
+            }
+
+            if (hasActiveAlgorithm) {
+              this.drawAlgorithms();
+              this.updateStats();
+              this.lastStepTime = currentTime;
+            } else {
+              // All algorithms finished
+              this.isPlaying = false;
+              this.elements.playPauseBtn.textContent = '▶ Play';
+            }
+          }
+
+          this.animationId = requestAnimationFrame(animate);
+        };
+
+        animate(0);
       }
     }
 
     // Initialize the application when DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
-      new App();
+      new AlgorithmVisualizer();
     });
   </script>
 </body>
