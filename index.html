@@ -3,55 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Algorithm Visualizer Pro</title>
+  <title>Algorithm Visualizer Pro - Interactive Learning Platform</title>
+  <meta name="description" content="Explore and visualize algorithms with interactive animations. Learn sorting, searching, pathfinding, and data structures through beautiful visualizations.">
+  <meta name="keywords" content="algorithms, visualization, sorting, searching, pathfinding, data structures, computer science, education">
+  <meta name="author" content="Algorithm Visualizer Pro">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Algorithm Visualizer Pro</h1>
-    <div id="controls">
-      <div class="control-group">
-        <label>Category</label>
-        <select id="categorySelect">
-          <option value="sorting">Sorting</option>
-          <option value="searching">Searching</option>
-          <option value="pathfinding">Pathfinding</option>
-        </select>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h2>Loading Algorithm Visualizer...</h2>
+      <p>Preparing your interactive learning experience</p>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <h1 class="brand-title">
+          <span class="brand-icon">⚡</span>
+          Algorithm Visualizer Pro
+        </h1>
+        <p class="brand-subtitle">Interactive Learning Platform</p>
       </div>
-      
-      <div class="control-group">
-        <label>Algorithm</label>
-        <select id="algorithmSelect"></select>
+
+      <div class="controls-grid" id="controls">
+        <div class="control-group">
+          <label class="control-label">
+            <span class="label-text">Category</span>
+            <span class="label-icon">📂</span>
+          </label>
+          <select id="categorySelect" class="control-select">
+            <option value="sorting">Sorting Algorithms</option>
+            <option value="searching">Search Algorithms</option>
+            <option value="data-structures">Data Structures</option>
+            <option value="pathfinding">Pathfinding</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">
+            <span class="label-text">Algorithm</span>
+            <span class="label-icon">🔧</span>
+          </label>
+          <select id="algorithmSelect" class="control-select"></select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">
+            <span class="label-text">Speed</span>
+            <span class="label-icon">⚡</span>
+            <span id="speedValue" class="label-value">1x</span>
+          </label>
+          <input type="range" id="speedSlider" class="control-slider" min="0.01" max="50" step="0.01" value="1">
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">
+            <span class="label-text">Size</span>
+            <span class="label-icon">📊</span>
+            <span id="sizeValue" class="label-value">100</span>
+          </label>
+          <input type="range" id="sizeSlider" class="control-slider" min="5" max="500" step="5" value="100">
+        </div>
+
+        <div class="control-actions">
+          <button id="playPauseBtn" class="btn btn-primary">
+            <span class="btn-icon">▶</span>
+            <span class="btn-text">Play</span>
+          </button>
+          <button id="resetBtn" class="btn btn-secondary">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Reset</span>
+          </button>
+          <button id="battleModeBtn" class="btn btn-accent">
+            <span class="btn-icon">⚔</span>
+            <span class="btn-text">Battle Mode</span>
+          </button>
+        </div>
+
+        <div class="control-settings">
+          <button id="settingsBtn" class="btn btn-ghost">
+            <span class="btn-icon">⚙️</span>
+          </button>
+          <button id="helpBtn" class="btn btn-ghost">
+            <span class="btn-icon">❓</span>
+          </button>
+          <button id="fullscreenBtn" class="btn btn-ghost">
+            <span class="btn-icon">⛶</span>
+          </button>
+        </div>
       </div>
-      
-      <div class="control-group">
-        <label>Speed: <span id="speedValue">1x</span></label>
-        <input type="range" id="speedSlider" min="0.01" max="50" step="0.01" value="1">
-      </div>
-      
-      <div class="control-group">
-        <label>Size: <span id="sizeValue">100</span></label>
-        <input type="range" id="sizeSlider" min="5" max="500" step="5" value="100">
-      </div>
-      
-      <button id="playPauseBtn">▶ Play</button>
-      <button id="resetBtn" class="btn-success">🔄 Reset</button>
-      <button id="battleModeBtn" class="btn-warning">⚔ Battle Mode</button>
     </div>
   </header>
 
-  <main>
-    <div class="canvas-container">
-      <canvas id="canvas"></canvas>
-      <div id="statsA" class="stats-panel"></div>
-      <div id="algoInfoA" class="algorithm-info"></div>
+  <main class="main-content">
+    <div class="visualization-container">
+      <canvas id="canvas" class="visualization-canvas"></canvas>
+      <div class="overlay-panels">
+        <div id="statsA" class="stats-panel stats-panel-left"></div>
+        <div id="algoInfoA" class="algorithm-info algorithm-info-bottom"></div>
+        <div class="performance-indicator" id="performanceA">
+          <div class="performance-bar">
+            <div class="performance-fill"></div>
+          </div>
+          <span class="performance-text">Performance</span>
+        </div>
+      </div>
     </div>
-    <div class="canvas-container">
-      <canvas id="canvasBattle"></canvas>
-      <div id="statsB" class="stats-panel"></div>
-      <div id="algoInfoB" class="algorithm-info"></div>
+
+    <div class="visualization-container battle-canvas">
+      <canvas id="canvasBattle" class="visualization-canvas"></canvas>
+      <div class="overlay-panels">
+        <div id="statsB" class="stats-panel stats-panel-left"></div>
+        <div id="algoInfoB" class="algorithm-info algorithm-info-bottom"></div>
+        <div class="performance-indicator" id="performanceB">
+          <div class="performance-bar">
+            <div class="performance-fill"></div>
+          </div>
+          <span class="performance-text">Performance</span>
+        </div>
+      </div>
     </div>
   </main>
+
+  <div class="keyboard-shortcuts" id="keyboardShortcuts">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="shortcuts-grid">
+      <div class="shortcut">
+        <span class="key">Space</span>
+        <span class="action">Play/Pause</span>
+      </div>
+      <div class="shortcut">
+        <span class="key">R</span>
+        <span class="action">Reset</span>
+      </div>
+      <div class="shortcut">
+        <span class="key">B</span>
+        <span class="action">Battle Mode</span>
+      </div>
+      <div class="shortcut">
+        <span class="key">M</span>
+        <span class="action">Mute/Unmute</span>
+      </div>
+      <div class="shortcut">
+        <span class="key">F</span>
+        <span class="action">Fullscreen</span>
+      </div>
+      <div class="shortcut">
+        <span class="key">H</span>
+        <span class="action">Show/Hide Help</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-content">
+      <h3>Settings</h3>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          <input type="checkbox" id="showComplexity" checked>
+          <span class="checkmark"></span>
+          Show Time/Space Complexity
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          <input type="checkbox" id="enableSound" checked>
+          <span class="checkmark"></span>
+          Enable Sound Effects
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          <input type="checkbox" id="showKeyboardShortcuts">
+          <span class="checkmark"></span>
+          Show Keyboard Shortcuts
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          <input type="checkbox" id="highContrast">
+          <span class="checkmark"></span>
+          High Contrast Mode
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">Sound Volume</label>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="30">
+        <span class="volume-value" id="volumeValue">30%</span>
+      </div>
+
+      <div class="setting-actions">
+        <button class="btn btn-secondary" id="resetSettings">Reset to Defaults</button>
+        <button class="btn btn-primary" id="closeSettings">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-panel" id="helpPanel">
+    <div class="help-content">
+      <h3>How to Use Algorithm Visualizer Pro</h3>
+
+      <div class="help-section">
+        <h4>🎯 Getting Started</h4>
+        <p>Select a category and algorithm, then click Play to watch the visualization. Use the speed and size controls to customize your experience.</p>
+      </div>
+
+      <div class="help-section">
+        <h4>⚔️ Battle Mode</h4>
+        <p>Compare two algorithms side-by-side to see their relative performance and behavior differences.</p>
+      </div>
+
+      <div class="help-section">
+        <h4>🎮 Controls</h4>
+        <ul>
+          <li><strong>Speed:</strong> Adjust from ultra-slow (1ms) to ultra-fast (50x)</li>
+          <li><strong>Size:</strong> Change dataset size from 5 to 500 elements</li>
+          <li><strong>Reset:</strong> Generate new random data</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h4>📊 Understanding Visualizations</h4>
+        <ul>
+          <li><strong>Red bars:</strong> Elements being compared</li>
+          <li><strong>Yellow bars:</strong> Elements being swapped</li>
+          <li><strong>Green bars:</strong> Sorted/found elements</li>
+          <li><strong>Purple bars:</strong> Current focus element</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h4>🔊 Audio Cues</h4>
+        <p>Different sounds represent different operations - comparisons have higher pitch than swaps, and completion plays a satisfying tone.</p>
+      </div>
+
+      <button class="btn btn-primary" id="closeHelp">Got it!</button>
+    </div>
+  </div>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2024 Algorithm Visualizer Pro. Built for educational purposes.</p>
+      <div class="footer-links">
+        <span>Press H for help</span> •
+        <span>Made with ❤️ for learners</span>
+      </div>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

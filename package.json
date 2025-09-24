@@ -1,0 +1,51 @@
+{
+  "name": "algorithm-visualizer-pro",
+  "version": "2.0.0",
+  "description": "Interactive algorithm visualization platform for learning computer science concepts",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "build": "npm run minify",
+    "minify": "npm run minify:css && npm run minify:js",
+    "minify:css": "cleancss -o dist/styles.min.css styles.css",
+    "minify:js": "terser script.js -o dist/script.min.js -c -m",
+    "deploy": "npm run build && gh-pages -d dist",
+    "lint": "eslint script.js",
+    "format": "prettier --write *.js *.css *.html",
+    "serve": "serve -s . -l 3000"
+  },
+  "keywords": [
+    "algorithms",
+    "visualization",
+    "education",
+    "computer-science",
+    "sorting",
+    "searching",
+    "pathfinding",
+    "data-structures",
+    "interactive",
+    "learning"
+  ],
+  "author": "Algorithm Visualizer Pro",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/algorithm-visualizer-pro.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/algorithm-visualizer-pro/issues"
+  },
+  "homepage": "https://username.github.io/algorithm-visualizer-pro",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.2",
+    "eslint": "^8.57.0",
+    "gh-pages": "^6.1.0",
+    "prettier": "^3.2.5",
+    "serve": "^14.2.1",
+    "terser": "^5.27.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
